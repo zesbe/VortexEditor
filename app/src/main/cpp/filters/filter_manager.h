@@ -5,6 +5,8 @@
 #include "color_filter.h"
 #include "blur_filter.h"
 #include <map>
+#include <string>
+#include <vector>
 
 namespace videoeditor {
 

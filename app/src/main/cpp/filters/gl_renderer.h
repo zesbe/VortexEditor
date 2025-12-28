@@ -4,6 +4,8 @@
 #include "common.h"
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
+#include <map>
+#include <string>
 
 namespace videoeditor {
 
