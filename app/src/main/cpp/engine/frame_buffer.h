@@ -2,6 +2,7 @@
 #define VIDEO_EDITOR_FRAME_BUFFER_H
 
 #include "common.h"
+#include "timeline.h"
 
 namespace videoeditor {
 
@@ -14,7 +15,7 @@ public:
     void clear();
 
     // Composite source frame onto this buffer
-    void composite(VideoFrame& dest, const VideoFrame& src, const ClipInfo& clip);
+    void composite(VideoFrame& dest, const VideoFrame& src, const TimelineClip& clip);
 
     // Apply alpha blending
     void blend(VideoFrame& dest, const VideoFrame& src, float alpha);

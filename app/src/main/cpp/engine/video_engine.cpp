@@ -260,7 +260,7 @@ VideoFrame VideoEngine::getPreviewFrame(int64_t position) {
         for (const auto& clip : clips) {
             // Decode frame from clip
             VideoFrame clipFrame = m_decoder->decodeFrame(clip.filePath, 
-                position - clip.startTime_us + clip.trimStart_us);
+                position - clip.startTime + clip.trimStart);
             
             // Apply filters
             if (m_filterManager) {

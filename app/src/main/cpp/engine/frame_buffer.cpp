@@ -20,7 +20,7 @@ void FrameBuffer::clear() {
     std::fill(m_buffer.begin(), m_buffer.end(), 0);
 }
 
-void FrameBuffer::composite(VideoFrame& dest, const VideoFrame& src, const ClipInfo& clip) {
+void FrameBuffer::composite(VideoFrame& dest, const VideoFrame& src, const TimelineClip& clip) {
     std::lock_guard<std::mutex> lock(m_mutex);
     
     if (src.data.empty()) {
