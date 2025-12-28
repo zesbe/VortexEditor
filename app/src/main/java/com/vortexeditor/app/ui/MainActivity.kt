@@ -1,4 +1,4 @@
-package com.videoeditor.app.ui
+package com.vortexeditor.app.ui
 
 import android.Manifest
 import android.content.Intent
@@ -10,8 +10,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.videoeditor.app.databinding.ActivityMainBinding
-import com.videoeditor.app.ui.editor.EditorActivity
+import com.vortexeditor.app.databinding.ActivityMainBinding
+import com.vortexeditor.app.ui.editor.EditorActivity
 
 class MainActivity : AppCompatActivity() {
 

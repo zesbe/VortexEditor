@@ -6,7 +6,7 @@
 }
 
 # Keep VideoEngine
--keep class com.videoeditor.app.core.** { *; }
+-keep class com.vortexeditor.app.core.** { *; }
 
 # ML Kit
 -keep class com.google.mlkit.** { *; }

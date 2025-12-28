@@ -1,4 +1,4 @@
-package com.videoeditor.app.core
+package com.vortexeditor.app.core
 
 import android.view.Surface
 

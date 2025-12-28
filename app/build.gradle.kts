@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.videoeditor.app"
+    namespace = "com.vortexeditor.app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.videoeditor.app"
+        applicationId = "com.vortexeditor.app"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

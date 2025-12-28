@@ -1,4 +1,4 @@
-# Video Editor for Android
+# VortexEditor
 
 A professional video editing app for Android with a native C++ core engine for maximum performance.
 
@@ -53,8 +53,8 @@ A professional video editing app for Android with a native C++ core engine for m
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/video-editor-android.git
-cd video-editor-android
+git clone https://github.com/zesbe/VortexEditor.git
+cd VortexEditor
 ```
 
 2. Open in Android Studio

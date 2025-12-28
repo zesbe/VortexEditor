@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Video Editor</string>
+    <string name="app_name">VortexEditor</string>
     <string name="new_project">New Project</string>
     <string name="open_project">Open Project</string>
     <string name="export">Export</string>

@@ -1,12 +1,12 @@
-package com.videoeditor.app.ui.export
+package com.vortexeditor.app.ui.export
 
 import android.os.Bundle
 import android.os.Environment
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.videoeditor.app.core.VideoEditorManager
-import com.videoeditor.app.databinding.ActivityExportBinding
+import com.vortexeditor.app.core.VideoEditorManager
+import com.vortexeditor.app.databinding.ActivityExportBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.File

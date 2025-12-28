@@ -1,4 +1,4 @@
-package com.videoeditor.app.ui.editor
+package com.vortexeditor.app.ui.editor
 
 import android.net.Uri
 import android.os.Bundle
@@ -6,9 +6,9 @@ import android.view.SurfaceHolder
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.videoeditor.app.core.VideoEditorManager
-import com.videoeditor.app.databinding.ActivityEditorBinding
-import com.videoeditor.app.ui.export.ExportActivity
+import com.vortexeditor.app.core.VideoEditorManager
+import com.vortexeditor.app.databinding.ActivityEditorBinding
+import com.vortexeditor.app.ui.export.ExportActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

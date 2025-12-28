@@ -15,5 +15,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "VideoEditor"
+rootProject.name = "VortexEditor"
 include(":app")
