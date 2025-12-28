@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Video Editor</string>
+    <string name="new_project">New Project</string>
+    <string name="open_project">Open Project</string>
+    <string name="export">Export</string>
+    <string name="cancel">Cancel</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="trim">Trim</string>
+    <string name="split">Split</string>
+    <string name="speed">Speed</string>
+    <string name="filters">Filters</string>
+    <string name="text">Text</string>
+    <string name="audio">Audio</string>
+</resources>
