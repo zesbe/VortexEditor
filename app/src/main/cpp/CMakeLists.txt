@@ -17,6 +17,7 @@ find_library(jnigraphics-lib jnigraphics)
 find_library(EGL-lib EGL)
 find_library(GLESv3-lib GLESv3)
 find_library(mediandk-lib mediandk)
+find_library(OpenSLES-lib OpenSLES)
 
 # Include directories
 include_directories(
@@ -77,4 +78,5 @@ target_link_libraries(
     ${EGL-lib}
     ${GLESv3-lib}
     ${mediandk-lib}
+    ${OpenSLES-lib}
 )
