@@ -3,6 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+// Use Kotlin 1.9.22
+
 android {
     namespace = "com.vortexeditor.app"
     compileSdk = 34
