@@ -75,6 +75,9 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
 
     // Video Player
     implementation("androidx.media3:media3-exoplayer:1.2.1")
