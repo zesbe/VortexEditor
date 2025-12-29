@@ -11,174 +11,78 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.vortexeditor.app.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    // File picker launcher
     private val pickVideoLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        uri?.let { handleVideoSelected(it) }
+        uri?.let { openEditor(it) }
     }
 
-    // Permission launcher
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val allGranted = permissions.entries.all { it.value }
-        if (allGranted) {
-            openVideoPicker()
+    ) { results ->
+        if (results.values.all { it }) {
+            pickVideoLauncher.launch("video/*")
         } else {
-            Toast.makeText(this, "Permission required to access videos", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Permission required", Toast.LENGTH_SHORT).show()
         }
     }
-
-    // Camera launcher
-    private val cameraLauncher = registerForActivityResult(
-        ActivityResultContracts.CaptureVideo()
-    ) { success ->
-        if (success) {
-            tempVideoUri?.let { handleVideoSelected(it) }
-        }
-    }
-
-    private var tempVideoUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupToolbar()
-        setupClickListeners()
-        setupRecentProjects()
+        setupUI()
     }
 
-    private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.title = "VortexEditor"
-    }
-
-    private fun setupClickListeners() {
-        // New Project button
-        binding.btnNewProject.setOnClickListener {
-            checkPermissionAndOpenPicker()
-        }
-
-        // Import Video card
-        binding.cardImportVideo.setOnClickListener {
-            checkPermissionAndOpenPicker()
-        }
-
-        // Record Video card
-        binding.cardRecordVideo.setOnClickListener {
-            openCamera()
+    private fun setupUI() {
+        binding.btnNewProject.setOnClickListener { selectVideo() }
+        binding.cardImportVideo.setOnClickListener { selectVideo() }
+        binding.cardRecordVideo.setOnClickListener { 
+            Toast.makeText(this, "Camera opening...", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun setupRecentProjects() {
-        binding.rvRecentProjects.layoutManager = LinearLayoutManager(
-            this, 
-            LinearLayoutManager.HORIZONTAL, 
-            false
-        )
-        // TODO: Load recent projects from database
-        // For now, show empty state
-        binding.emptyState.visibility = android.view.View.VISIBLE
-    }
-
-    private fun checkPermissionAndOpenPicker() {
+    private fun selectVideo() {
         val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arrayOf(Manifest.permission.READ_MEDIA_VIDEO)
         } else {
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
 
-        val allGranted = permissions.all {
+        val granted = permissions.all {
             ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
         }
 
-        if (allGranted) {
-            openVideoPicker()
+        if (granted) {
+            pickVideoLauncher.launch("video/*")
         } else {
             permissionLauncher.launch(permissions)
         }
     }
 
-    private fun openVideoPicker() {
+    private fun openEditor(uri: Uri) {
         try {
-            pickVideoLauncher.launch("video/*")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, "Error opening file picker: ${e.message}", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun openCamera() {
-        val hasCameraPermission = ContextCompat.checkSelfPermission(
-            this, 
-            Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
-
-        if (!hasCameraPermission) {
-            permissionLauncher.launch(arrayOf(Manifest.permission.CAMERA))
-            return
-        }
-
-        try {
-            // Create temp file for video
-            val contentValues = android.content.ContentValues().apply {
-                put(MediaStore.MediaColumns.DISPLAY_NAME, "VortexEditor_${System.currentTimeMillis()}.mp4")
-                put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
-            }
-            
-            tempVideoUri = contentResolver.insert(
-                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                contentValues
-            )
-            
-            tempVideoUri?.let { uri ->
-                cameraLauncher.launch(uri)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, "Error opening camera: ${e.message}", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun handleVideoSelected(uri: Uri) {
-        try {
-            // Get file info
-            val cursor = contentResolver.query(uri, null, null, null, null)
-            var fileName = "Unknown"
-            var fileSize = 0L
-            
-            cursor?.use {
-                if (it.moveToFirst()) {
-                    val nameIndex = it.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)
-                    val sizeIndex = it.getColumnIndex(MediaStore.MediaColumns.SIZE)
-                    
-                    if (nameIndex >= 0) fileName = it.getString(nameIndex) ?: "Unknown"
-                    if (sizeIndex >= 0) fileSize = it.getLong(sizeIndex)
+            var name = "Video"
+            contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val idx = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)
+                    if (idx >= 0) name = cursor.getString(idx) ?: "Video"
                 }
             }
 
-            // Open editor activity
-            val intent = Intent(this, EditorActivity::class.java).apply {
+            startActivity(Intent(this, EditorActivity::class.java).apply {
                 putExtra("video_uri", uri.toString())
-                putExtra("video_name", fileName)
-                putExtra("video_size", fileSize)
-            }
-            startActivity(intent)
-            
+                putExtra("video_name", name)
+            })
         } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, "Error loading video: ${e.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 }

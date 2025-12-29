@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/background">
 
     <!-- Top Toolbar -->
     <LinearLayout
-        android:id="@+id/topToolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/surface"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="8dp"
-        app:layout_constraintTop_toTopOf="parent">
+        android:paddingHorizontal="8dp">
 
         <ImageButton
             android:id="@+id/btnBack"
@@ -23,7 +20,8 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_back"
-            app:tint="@color/white"/>
+            app:tint="@color/white"
+            android:contentDescription="Back"/>
 
         <TextView
             android:id="@+id/tvVideoName"
@@ -43,7 +41,8 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_undo"
-            app:tint="@color/white"/>
+            app:tint="@color/white"
+            android:contentDescription="Undo"/>
 
         <ImageButton
             android:id="@+id/btnRedo"
@@ -51,7 +50,8 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_redo"
-            app:tint="@color/white"/>
+            app:tint="@color/white"
+            android:contentDescription="Redo"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnExport"
@@ -66,12 +66,10 @@
 
     <!-- Video Preview -->
     <FrameLayout
-        android:id="@+id/videoContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="#000000"
-        app:layout_constraintBottom_toTopOf="@id/playerControls"
-        app:layout_constraintTop_toBottomOf="@id/topToolbar">
+        android:layout_weight="1"
+        android:background="#000000">
 
         <VideoView
             android:id="@+id/videoView"
@@ -79,7 +77,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"/>
 
-        <!-- Play button overlay -->
         <ImageButton
             android:id="@+id/btnPlayPause"
             android:layout_width="64dp"
@@ -87,329 +84,109 @@
             android:layout_gravity="center"
             android:background="@drawable/bg_circle"
             android:src="@drawable/ic_play"
-            app:tint="@color/white"/>
+            app:tint="@color/white"
+            android:contentDescription="Play"/>
 
     </FrameLayout>
 
     <!-- Player Controls -->
     <LinearLayout
-        android:id="@+id/playerControls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/surface"
-        android:orientation="vertical"
         android:padding="12dp"
-        app:layout_constraintBottom_toTopOf="@id/timeline">
+        android:gravity="center_vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvCurrentTime"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            android:text="0:00"
+            android:textColor="@color/white"
+            android:textSize="12sp"/>
 
-            <TextView
-                android:id="@+id/tvCurrentTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0:00"
-                android:textColor="@color/white"
-                android:textSize="12sp"/>
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="8dp"/>
 
-            <SeekBar
-                android:id="@+id/seekBar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginHorizontal="8dp"/>
-
-            <TextView
-                android:id="@+id/tvDuration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0:00"
-                android:textColor="@color/white"
-                android:textSize="12sp"/>
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tvDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0:00"
+            android:textColor="@color/white"
+            android:textSize="12sp"/>
 
     </LinearLayout>
 
     <!-- Timeline -->
-    <HorizontalScrollView
-        android:id="@+id/timeline"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="#1A1A1A"
-        app:layout_constraintBottom_toTopOf="@id/bottomTools">
-
-        <LinearLayout
-            android:id="@+id/timelineContent"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:padding="8dp">
-
-            <!-- Timeline clips will be added here dynamically -->
-            <View
-                android:layout_width="400dp"
-                android:layout_height="match_parent"
-                android:layout_margin="4dp"
-                android:background="@drawable/bg_timeline_clip"/>
-
-        </LinearLayout>
-
-    </HorizontalScrollView>
+        android:layout_height="80dp"
+        android:background="#1A1A1A"/>
 
     <!-- Bottom Tools -->
     <HorizontalScrollView
-        android:id="@+id/bottomTools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/surface"
-        android:scrollbars="none"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:padding="8dp">
 
-            <!-- Trim -->
-            <LinearLayout
-                android:id="@+id/btnTrim"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="✂️"
-                    android:textSize="24sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Trim"
-                    android:textColor="@color/white"
-                    android:textSize="11sp"/>
-
+            <LinearLayout android:id="@+id/btnTrim" style="@style/ToolButton">
+                <TextView android:text="✂️" android:textSize="24sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:text="Trim" style="@style/ToolLabel"/>
             </LinearLayout>
 
-            <!-- Split -->
-            <LinearLayout
-                android:id="@+id/btnSplit"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📐"
-                    android:textSize="24sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Split"
-                    android:textColor="@color/white"
-                    android:textSize="11sp"/>
-
+            <LinearLayout android:id="@+id/btnSplit" style="@style/ToolButton">
+                <TextView android:text="📐" android:textSize="24sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:text="Split" style="@style/ToolLabel"/>
             </LinearLayout>
 
-            <!-- Speed -->
-            <LinearLayout
-                android:id="@+id/btnSpeed"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⚡"
-                    android:textSize="24sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Speed"
-                    android:textColor="@color/white"
-                    android:textSize="11sp"/>
-
+            <LinearLayout android:id="@+id/btnSpeed" style="@style/ToolButton">
+                <TextView android:text="⚡" android:textSize="24sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:text="Speed" style="@style/ToolLabel"/>
             </LinearLayout>
 
-            <!-- Filters -->
-            <LinearLayout
-                android:id="@+id/btnFilters"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🎨"
-                    android:textSize="24sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Filters"
-                    android:textColor="@color/white"
-                    android:textSize="11sp"/>
-
+            <LinearLayout android:id="@+id/btnFilters" style="@style/ToolButton">
+                <TextView android:text="🎨" android:textSize="24sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:text="Filters" style="@style/ToolLabel"/>
             </LinearLayout>
 
-            <!-- Text -->
-            <LinearLayout
-                android:id="@+id/btnText"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📝"
-                    android:textSize="24sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Text"
-                    android:textColor="@color/white"
-                    android:textSize="11sp"/>
-
+            <LinearLayout android:id="@+id/btnText" style="@style/ToolButton">
+                <TextView android:text="📝" android:textSize="24sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:text="Text" style="@style/ToolLabel"/>
             </LinearLayout>
 
-            <!-- Stickers -->
-            <LinearLayout
-                android:id="@+id/btnStickers"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="😀"
-                    android:textSize="24sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Stickers"
-                    android:textColor="@color/white"
-                    android:textSize="11sp"/>
-
+            <LinearLayout android:id="@+id/btnStickers" style="@style/ToolButton">
+                <TextView android:text="😀" android:textSize="24sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:text="Stickers" style="@style/ToolLabel"/>
             </LinearLayout>
 
-            <!-- Audio -->
-            <LinearLayout
-                android:id="@+id/btnAudio"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🎵"
-                    android:textSize="24sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Audio"
-                    android:textColor="@color/white"
-                    android:textSize="11sp"/>
-
+            <LinearLayout android:id="@+id/btnAudio" style="@style/ToolButton">
+                <TextView android:text="🎵" android:textSize="24sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:text="Audio" style="@style/ToolLabel"/>
             </LinearLayout>
 
-            <!-- Background -->
-            <LinearLayout
-                android:id="@+id/btnBackground"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🎭"
-                    android:textSize="24sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="BG Remove"
-                    android:textColor="@color/white"
-                    android:textSize="11sp"/>
-
+            <LinearLayout android:id="@+id/btnBackground" style="@style/ToolButton">
+                <TextView android:text="🎭" android:textSize="24sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:text="BG" style="@style/ToolLabel"/>
             </LinearLayout>
 
-            <!-- Transition -->
-            <LinearLayout
-                android:id="@+id/btnTransition"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🔄"
-                    android:textSize="24sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Transition"
-                    android:textColor="@color/white"
-                    android:textSize="11sp"/>
-
+            <LinearLayout android:id="@+id/btnTransition" style="@style/ToolButton">
+                <TextView android:text="🔄" android:textSize="24sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:text="Trans" style="@style/ToolLabel"/>
             </LinearLayout>
 
         </LinearLayout>
 
     </HorizontalScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
