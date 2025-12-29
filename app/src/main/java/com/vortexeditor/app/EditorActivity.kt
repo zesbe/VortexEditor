@@ -1,13 +1,16 @@
 package com.vortexeditor.app
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.vortexeditor.app.databinding.ActivityEditorBinding
+import com.vortexeditor.app.editor.*
+import com.vortexeditor.app.ui.dialogs.SpeedDialogFragment
 
 class EditorActivity : AppCompatActivity() {
 
@@ -18,8 +21,39 @@ class EditorActivity : AppCompatActivity() {
     private var currentPosition = 0L
     private var videoDuration = 0L
 
-    // Native engine handle
-    private var engineHandle: Long = 0
+    // Current editing state
+    private var currentSpeed = 1.0f
+    private var currentFilter = "none"
+    private var trimStart = 0L
+    private var trimEnd = 0L
+    private val textOverlays = mutableListOf<TextOverlayData>()
+    private val stickerOverlays = mutableListOf<StickerData>()
+
+    data class TextOverlayData(
+        val text: String,
+        val size: Float,
+        val color: Int,
+        val font: String,
+        var x: Float = 0.5f,
+        var y: Float = 0.5f
+    )
+
+    data class StickerData(
+        val emoji: String,
+        var x: Float = 0.5f,
+        var y: Float = 0.5f,
+        var scale: Float = 1f
+    )
+
+    // Music picker
+    private val pickMusicLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            Toast.makeText(this, "Music added: $it", Toast.LENGTH_SHORT).show()
+            // TODO: Add music to timeline
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,12 +88,10 @@ class EditorActivity : AppCompatActivity() {
         }
 
         binding.btnUndo.setOnClickListener {
-            // TODO: Implement undo
             Toast.makeText(this, "Undo", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnRedo.setOnClickListener {
-            // TODO: Implement redo
             Toast.makeText(this, "Redo", Toast.LENGTH_SHORT).show()
         }
 
@@ -74,10 +106,9 @@ class EditorActivity : AppCompatActivity() {
                 binding.videoView.setVideoURI(uri)
                 binding.videoView.setOnPreparedListener { mp ->
                     videoDuration = mp.duration.toLong()
+                    trimEnd = videoDuration
                     binding.tvDuration.text = formatTime(videoDuration)
                     binding.seekBar.max = videoDuration.toInt()
-                    
-                    // Show first frame
                     binding.videoView.seekTo(1)
                 }
 
@@ -86,7 +117,7 @@ class EditorActivity : AppCompatActivity() {
                     updatePlayButton()
                 }
 
-                binding.videoView.setOnErrorListener { _, what, extra ->
+                binding.videoView.setOnErrorListener { _, what, _ ->
                     Toast.makeText(this, "Error playing video: $what", Toast.LENGTH_SHORT).show()
                     true
                 }
@@ -97,12 +128,10 @@ class EditorActivity : AppCompatActivity() {
             }
         }
 
-        // Play/Pause button
         binding.btnPlayPause.setOnClickListener {
             togglePlayPause()
         }
 
-        // SeekBar
         binding.seekBar.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
@@ -114,7 +143,6 @@ class EditorActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {}
         })
 
-        // Update progress periodically
         binding.videoView.setOnPreparedListener {
             updateProgress()
         }
@@ -152,7 +180,7 @@ class EditorActivity : AppCompatActivity() {
     private fun setupBottomTools() {
         // Trim
         binding.btnTrim.setOnClickListener {
-            showToolPanel("trim")
+            showTrimDialog()
         }
 
         // Split
@@ -167,53 +195,121 @@ class EditorActivity : AppCompatActivity() {
 
         // Filters
         binding.btnFilters.setOnClickListener {
-            showToolPanel("filters")
+            showFiltersDialog()
         }
 
         // Text
         binding.btnText.setOnClickListener {
-            showToolPanel("text")
+            showTextDialog()
         }
 
         // Stickers
         binding.btnStickers.setOnClickListener {
-            showToolPanel("stickers")
+            showStickersDialog()
         }
 
         // Audio
         binding.btnAudio.setOnClickListener {
-            showToolPanel("audio")
+            showAudioDialog()
         }
 
         // Background
         binding.btnBackground.setOnClickListener {
-            showToolPanel("background")
+            showBackgroundDialog()
         }
     }
 
-    private fun showToolPanel(tool: String) {
-        Toast.makeText(this, "Opening $tool panel...", Toast.LENGTH_SHORT).show()
-        // TODO: Implement tool panels
+    private fun showTrimDialog() {
+        TrimFragment.newInstance(videoDuration).apply {
+            onTrimApplied = { start, end ->
+                trimStart = start
+                trimEnd = end
+                Toast.makeText(this@EditorActivity, 
+                    "Trimmed: ${formatTime(start)} - ${formatTime(end)}", 
+                    Toast.LENGTH_SHORT).show()
+            }
+        }.show(supportFragmentManager, "trim")
     }
 
     private fun splitAtCurrentPosition() {
         val position = binding.videoView.currentPosition
         Toast.makeText(this, "Split at ${formatTime(position.toLong())}", Toast.LENGTH_SHORT).show()
-        // TODO: Implement split
     }
 
     private fun showSpeedDialog() {
-        com.vortexeditor.app.ui.dialogs.SpeedDialogFragment.newInstance(1.0f).apply {
+        SpeedDialogFragment.newInstance(currentSpeed).apply {
             onSpeedChanged = { speed ->
+                currentSpeed = speed
                 Toast.makeText(this@EditorActivity, "Speed: ${speed}x", Toast.LENGTH_SHORT).show()
-                // TODO: Apply speed change
             }
         }.show(supportFragmentManager, "speed")
     }
 
+    private fun showFiltersDialog() {
+        FiltersFragment.newInstance().apply {
+            onFilterSelected = { filter ->
+                currentFilter = filter
+                Toast.makeText(this@EditorActivity, "Filter: $filter", Toast.LENGTH_SHORT).show()
+                applyFilter(filter)
+            }
+        }.show(supportFragmentManager, "filters")
+    }
+
+    private fun applyFilter(filter: String) {
+        // TODO: Apply filter to video preview using GPUImage or native code
+    }
+
+    private fun showTextDialog() {
+        TextFragment.newInstance().apply {
+            onTextAdded = { text, size, color, font ->
+                textOverlays.add(TextOverlayData(text, size, color, font))
+                Toast.makeText(this@EditorActivity, "Text added: $text", Toast.LENGTH_SHORT).show()
+                // TODO: Show text overlay on video
+            }
+        }.show(supportFragmentManager, "text")
+    }
+
+    private fun showStickersDialog() {
+        StickersFragment.newInstance().apply {
+            onStickerSelected = { emoji ->
+                stickerOverlays.add(StickerData(emoji))
+                Toast.makeText(this@EditorActivity, "Sticker added: $emoji", Toast.LENGTH_SHORT).show()
+                // TODO: Show sticker overlay on video
+            }
+        }.show(supportFragmentManager, "stickers")
+    }
+
+    private fun showAudioDialog() {
+        AudioFragment.newInstance().apply {
+            onAudioSettingsChanged = { videoVol, musicVol, muted ->
+                Toast.makeText(this@EditorActivity, 
+                    "Audio: Video=$videoVol%, Music=$musicVol%, Muted=$muted", 
+                    Toast.LENGTH_SHORT).show()
+            }
+            onAddMusic = {
+                pickMusicLauncher.launch("audio/*")
+            }
+            onRecordVoice = {
+                Toast.makeText(this@EditorActivity, "Voice recording...", Toast.LENGTH_SHORT).show()
+                // TODO: Open voice recorder
+            }
+        }.show(supportFragmentManager, "audio")
+    }
+
+    private fun showBackgroundDialog() {
+        Toast.makeText(this, "Background removal: Processing...", Toast.LENGTH_SHORT).show()
+        // TODO: Implement background removal using ML Kit
+    }
+
     private fun showExportDialog() {
-        Toast.makeText(this, "Export dialog...", Toast.LENGTH_SHORT).show()
-        // TODO: Show export dialog
+        com.vortexeditor.app.ui.dialogs.ExportDialogFragment.newInstance().apply {
+            onExportRequested = { resolution, quality, fps ->
+                Toast.makeText(this@EditorActivity, 
+                    "Exporting: $resolution, $quality quality, ${fps}fps", 
+                    Toast.LENGTH_SHORT).show()
+                // TODO: Start export with VideoExporter
+            }
+        }.show(supportFragmentManager, "export")
     }
 
     private fun formatTime(ms: Long): String {
