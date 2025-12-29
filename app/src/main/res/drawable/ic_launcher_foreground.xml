@@ -4,11 +4,66 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    
+    <!-- Vortex Spiral -->
+    <path
+        android:fillColor="#7C4DFF"
+        android:pathData="M54,20 
+            C70,20 82,32 82,48 
+            C82,58 76,66 68,70 
+            C60,74 50,72 44,66 
+            C38,60 38,50 42,44 
+            C46,38 54,36 60,40 
+            C66,44 68,52 64,58 
+            C60,64 52,66 46,62"/>
+    
+    <!-- Inner spiral -->
+    <path
+        android:fillColor="#B388FF"
+        android:pathData="M54,30 
+            C66,30 74,38 74,50 
+            C74,58 70,64 64,68 
+            C58,72 50,70 46,66 
+            C42,62 42,54 46,50 
+            C50,46 56,46 60,50"/>
+    
+    <!-- Play button in center -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M54,30 L54,54 L72,42 Z" />
+        android:pathData="M48,42 L48,66 L68,54 Z"/>
+    
+    <!-- Film strip left -->
     <path
-        android:strokeColor="#FFFFFF"
-        android:strokeWidth="4"
-        android:pathData="M36,30 L36,78 L72,78 L72,42 L60,30 Z" />
+        android:fillColor="#7C4DFF"
+        android:pathData="M20,30 L30,30 L30,78 L20,78 Z"/>
+    <path
+        android:fillColor="#121212"
+        android:pathData="M22,34 L28,34 L28,40 L22,40 Z"/>
+    <path
+        android:fillColor="#121212"
+        android:pathData="M22,44 L28,44 L28,50 L22,50 Z"/>
+    <path
+        android:fillColor="#121212"
+        android:pathData="M22,54 L28,54 L28,60 L22,60 Z"/>
+    <path
+        android:fillColor="#121212"
+        android:pathData="M22,64 L28,64 L28,70 L22,70 Z"/>
+    
+    <!-- Film strip right -->
+    <path
+        android:fillColor="#7C4DFF"
+        android:pathData="M78,30 L88,30 L88,78 L78,78 Z"/>
+    <path
+        android:fillColor="#121212"
+        android:pathData="M80,34 L86,34 L86,40 L80,40 Z"/>
+    <path
+        android:fillColor="#121212"
+        android:pathData="M80,44 L86,44 L86,50 L80,50 Z"/>
+    <path
+        android:fillColor="#121212"
+        android:pathData="M80,54 L86,54 L86,60 L80,60 Z"/>
+    <path
+        android:fillColor="#121212"
+        android:pathData="M80,64 L86,64 L86,70 L80,70 Z"/>
+
 </vector>

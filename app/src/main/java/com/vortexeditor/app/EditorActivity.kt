@@ -217,6 +217,11 @@ class EditorActivity : AppCompatActivity() {
         binding.btnBackground.setOnClickListener {
             showBackgroundDialog()
         }
+
+        // Transitions
+        binding.btnTransition.setOnClickListener {
+            showTransitionsDialog()
+        }
     }
 
     private fun showTrimDialog() {
@@ -297,8 +302,23 @@ class EditorActivity : AppCompatActivity() {
     }
 
     private fun showBackgroundDialog() {
-        Toast.makeText(this, "Background removal: Processing...", Toast.LENGTH_SHORT).show()
-        // TODO: Implement background removal using ML Kit
+        BackgroundFragment.newInstance().apply {
+            onBackgroundApplied = { mode, intensity, color ->
+                Toast.makeText(this@EditorActivity, 
+                    "Background: $mode, intensity=$intensity%", 
+                    Toast.LENGTH_SHORT).show()
+            }
+        }.show(supportFragmentManager, "background")
+    }
+
+    private fun showTransitionsDialog() {
+        TransitionsFragment.newInstance().apply {
+            onTransitionSelected = { transition, duration ->
+                Toast.makeText(this@EditorActivity, 
+                    "Transition: $transition, ${duration}s", 
+                    Toast.LENGTH_SHORT).show()
+            }
+        }.show(supportFragmentManager, "transitions")
     }
 
     private fun showExportDialog() {
